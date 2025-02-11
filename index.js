@@ -1,87 +1,108 @@
-//starting freelancer array with at least 2 objects [{name: 'Sam', occupation: 'Programmer', price: 50}]
+// Starting freelancer array with at least 2 objects
+const startingFreelancers = [
+  { name: 'Sam', occupation: 'Programmer', price: 50 },
+  { name: 'Alex', occupation: 'Designer', price: 60 }
+];
 
-//array of names
+const arrayNames = ['Jack', 'Jill', 'Jalonda', 'Jalen', 'Jackson'];
+const arrayOccupations = ['Photographer', 'Journalist', 'Singer', 'Painter', 'Comedian'];
 
-//array of occupations
+// Create init function
+function init() {
+    let freelancerContainer = document.querySelector('.freelancerContainer');
 
-/**
- * create init function
- *
- *      1. select freelancer_container from DOM
- *      2. create DOM elements
- *          - table
- *          - thead
- *              - tr (header row)
- *          - tbody
- *      3. Add text to the header row where the text matches the object key of a freelancer
- *      4. Append header row to the thead
- *      5. Append thead and tbody to table
- *      6. Append table to freelancer_container
- *      7. Call the function created below to render the freelancer array
- *      8. Call the function created below to render the average price
- *
- */
+    let table = document.createElement('table');
+    let tHeader = document.createElement('thead');
+    let headerRow = document.createElement('tr');
+    let tableBody = document.createElement('tbody');
+    tableBody.id = "freelancerBody";
 
-/**
- * Create function to render the freelancer array to the DOM
- *
- *      1. select tbody from DOM
- *      2. map over freelancer array
- *          2-1. create elements
- *              - tr
- *              - td (name)
- *              - td (occupation)
- *              - td (starting price)
- *          2-2. Add text to each td representing the value of the freelancer object
- *          2-3. Append tds to tr
- *          2-4. return tr
- *      3. replace children of tbody with the elements created in the map
- */
+    let headers = ['Name', 'Occupation', 'Price'];
+    headers.forEach(text => {
+        let th = document.createElement('th');
+        th.textContent = text;
+        headerRow.appendChild(th);
+    });
 
-/**
- * Create a function to render the average freelancer price to the DOM
- *
- *      1. get average_price span and p tag from DOM
- *      2. call sum function with the freelancer array
- *      3. call avg function passing the calculated sum and the freelancer array
- *      4. update textContent of the span with the avg
- *          - if textContent doesn't work use innerHTML
- *      5. replace children of p tag with the updated span
- */
+    tHeader.appendChild(headerRow);
 
-/**
- * Create function to sum all prices in our freelancer array
- */
+    table.appendChild(tHeader);
+    table.appendChild(tableBody);
+
+    freelancerContainer.appendChild(table);
+
+    renderFreelancers();
+    renderAveragePrice();
+}
+
+// Create function to render the freelancer array to the DOM
+function renderFreelancers() {
+    let tbody = document.getElementById('freelancerBody');
+
+    tbody.innerHTML = "";
+    startingFreelancers.forEach(freelancer => {
+        let row = document.createElement('tr');
+        let tdName = document.createElement('td');
+        let tdOccupation = document.createElement('td');
+        let tdPrice = document.createElement('td');
+
+        tdName.textContent = freelancer.name;
+        tdOccupation.textContent = freelancer.occupation;
+        tdPrice.textContent = `$${freelancer.price}`;
+
+        row.appendChild(tdName);
+        row.appendChild(tdOccupation);
+        row.appendChild(tdPrice);
+
+        tbody.appendChild(row);
+    });
+}
+
+// Create a function to render the average freelancer price to the DOM
+function renderAveragePrice() {
+    let avgPriceSpan = document.querySelector('.averagePrice');
+    let avgPriceP = document.querySelector('p');
+
+    let totalPrice = sum(startingFreelancers);
+
+    let avgPrice = avg(totalPrice, startingFreelancers);
+
+    avgPriceSpan.textContent = `$${avgPrice.toFixed(2)}`;
+
+    avgPriceP.replaceChildren(avgPriceSpan);
+}
+
+// Create function to sum all prices in our freelancer array
 function sum(arr) {
-    //total price
-  }
-  
-  /**
-   *
-   * Function to get average of given price with array
-   *
-   * @param {Number} totalPrice
-   * @param {Array} arr
-   * @returns Number
-   */
-  function avg(totalPrice, arr) {
+    let total = 0;
+    arr.forEach(freelancer => {
+        total += freelancer.price;
+    });
+    return total;
+}
+
+//Function to get average of given price with array
+function avg(totalPrice, arr) {
     return totalPrice / arr.length;
-  }
-  
-  /**
-   * Create a function to add a new freelancer to the freelancer array
-   *
-   *      1. create variable for the new freelancer object
-   *      2. set the name value of our new freelancer to a random name selected from our names array
-   *      3. set the occupation value of our new freelancer to a random occupation selected from our occupations array
-   *      4. generate random price for new freelancer
-   *
-   * new_freelancer --> {name: 'Alex', occupation: 'writer', price: 75 }
-   *
-   *      5. add new freelancer to the freelancers array
-   *      6. Call the function created above to render the freelancer array
-   *      7. Call the function created above to render the average price
-   *
-   */
-  
-  //setInterval calling the function that adds a new freelancer every second aka 1000 miliseconds
+}
+
+// Create a function to add a new freelancer to the freelancer array
+function addFreelancer() {
+    let newFreelancer = {};
+
+    newFreelancer.name = arrayNames[Math.floor(Math.random() * arrayNames.length)];
+
+    newFreelancer.occupation = arrayOccupations[Math.floor(Math.random() * arrayOccupations.length)];
+
+    newFreelancer.price = Math.floor(Math.random() * 100) + 20; // Random price between 20 - 120
+
+    startingFreelancers.push(newFreelancer);
+
+    renderFreelancers();
+
+    renderAveragePrice();
+}
+
+setInterval(addFreelancer, 1000);
+
+init();
